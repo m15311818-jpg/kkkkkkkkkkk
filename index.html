@@ -1,1 +1,76 @@
-
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام الحضور</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body {
+    background: linear-gradient(135deg, #0f0f1e, #1a1a3e);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+.container {
+    max-width: 500px;
+    width: 100%;
+    background: rgba(30, 30, 55, 0.7);
+    padding: 50px 30px;
+    border-radius: 25px;
+    border: 2px solid rgba(255, 80, 80, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: shake 2s infinite;
+}
+@keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #ff5050, #ff8800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+p {
+    color: #8892c0;
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+.warning {
+    color: #ff5050;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(255, 80, 80, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 80, 80, 0.3);
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">🚫</div>
+    <h1>هذا الرابط غير مخصص</h1>
+    <p>الرجاء استخدام الرابط المخصص لك:</p>
+    <p>👨‍🏫 الدكتور: <strong>doctor.html</strong></p>
+    <p>👨‍🎓 الطالب: <strong>student.html</strong></p>
+    <div class="warning">
+        ⚠️ هذا الرابط ليس للاستخدام العام
+    </div>
+</div>
+</body>
+</html>
