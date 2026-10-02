@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الحضور - الطالب</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body {
+    background: linear-gradient(135deg, #0f0f1e, #2a1a3e);
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    max-width: 500px;
+    width: 100%;
+    background: rgba(30, 30, 55, 0.7);
+    padding: 30px;
+    border-radius: 25px;
+    border: 2px solid rgba(160, 100, 255, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #ff64b4, #a064ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.subtitle {
+    text-align: center;
+    color: #8892c0;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #a0a8d0;
+    font-weight: 600;
+}
+input {
+    width: 100%;
+    padding: 16px;
+    font-size: 17px;
+    color: #fff;
+    background: rgba(10, 15, 35, 0.9);
+    border: 2px solid rgba(160, 100, 255, 0.3);
+    border-radius: 12px;
+    outline: none;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+input:focus {
+    border-color: #ff64b4;
+    box-shadow: 0 0 0 4px rgba(255, 100, 180, 0.15);
+}
+input::placeholder { color: #566; }
+button {
+    width: 100%;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff64b4, #a064ff);
+    color: #fff;
+    font-family: inherit;
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.message {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 16px;
+    display: none;
+    line-height: 1.6;
+}
+.message.success {
+    background: rgba(100, 255, 150, 0.15);
+    color: #64ff96;
+    border: 2px solid rgba(100, 255, 150, 0.4);
+    display: block;
+}
+.message.error {
+    background: rgba(255, 80, 80, 0.15);
+    color: #ff5050;
+    border: 2px solid rgba(255, 80, 80, 0.4);
+    display: block;
+}
+.message.info {
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border: 2px solid rgba(255, 215, 0, 0.4);
+    display: block;
+}
+.code-input {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>📝 تسجيل الحضور</h1>
+    <p class="subtitle">سجل بياناتك للانضمام للمحاضرة</p>
+
+    <div class="form-group">
+        <label>👤 الاسم الكامل</label>
+        <input type="text" id="nameInput" placeholder="اكتب اسمك الكامل" maxlength="50">
+    </div>
+
+    <div class="form-group">
+        <label>🆔 الكود الجامعي (6 أرقام)</label>
+        <input type="text" id="idInput" placeholder="مثال: 202101"
+               maxlength="6" pattern="[0-9]{6}" inputmode="numeric">
+    </div>
+
+    <div class="form-group">
+        <label>🔑 رمز الجلسة (من الدكتور)</label>
+        <input type="text" id="codeInput" class="code-input"
+               placeholder="----" maxlength="5" autocomplete="off">
+    </div>
+
+    <button id="submitBtn" onclick="submitAttendance()">✅ تسجيل الحضور</button>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const firebaseConfig = {
+    databaseURL: "https://attendance-system-ad1c2-default-rtdb.firebaseio.com/"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// تحويل الكود لأحرف كبيرة تلقائياً
+document.getElementById('codeInput').addEventListener('input', (e) => {
+    e.target.value = e.target.value.toUpperCase();
+});
+
+// السماح بأرقام فقط في الكود الجامعي
+document.getElementById('idInput').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+});
+
+window.submitAttendance = async function() {
+    const name = document.getElementById('nameInput').value.trim();
+    const studentId = document.getElementById('idInput').value.trim();
+    const code = document.getElementById('codeInput').value.trim().toUpperCase();
+    const btn = document.getElementById('submitBtn');
+    const message = document.getElementById('message');
+
+    // التحقق
+    if (!name) return showMessage('❌ اكتب اسمك', 'error');
+    if (!/^\d{6}$/.test(studentId)) return showMessage('❌ الكود الجامعي لازم 6 أرقام', 'error');
+    if (code.length !== 5) return showMessage('❌ رمز الجلسة 5 أحرف', 'error');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري التحقق...';
+
+    try {
+        // التحقق من الجلسة
+        const sessionSnap = await get(ref(db, 'currentSession'));
+        const session = sessionSnap.val();
+
+        if (!session) {
+            return showMessage('❌ لا توجد جلسة نشطة', 'error');
+        }
+
+        if (!session.active) {
+            return showMessage('❌ الجلسة مغلقة', 'error');
+        }
+
+        if (session.code !== code) {
+            return showMessage('❌ رمز الجلسة غير صحيح', 'error');
+        }
+
+        // التحقق من عدم التسجيل المسبق
+        if (session.students && session.students[studentId]) {
+            return showMessage('⚠️ أنت مسجل بالفعل في هذه الجلسة', 'info');
+        }
+
+        // تسجيل الحضور
+        await set(ref(db, `currentSession/students/${studentId}`), {
+            name: name,
+            studentId: studentId,
+            timestamp: Date.now(),
+            confirmed: false
+        });
+
+        showMessage('✅ تم تسجيل حضورك بنجاح!\nارفع إيدك عشان الدكتور يأكد', 'success');
+
+        // مسح البيانات
+        document.getElementById('idInput').value = '';
+        document.getElementById('codeInput').value = '';
+
+    } catch (error) {
+        console.error(error);
+        showMessage('❌ خطأ في الاتصال: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '✅ تسجيل الحضور';
+    }
+};
+
+function showMessage(text, type) {
+    const msg = document.getElementById('message');
+    msg.textContent = text;
+    msg.className = 'message ' + type;
+}
+</script>
+</body>
+</html>
