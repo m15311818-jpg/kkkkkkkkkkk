@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام الحضور</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body {
+    background: linear-gradient(135deg, #0f0f1e, #1a1a3e);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.container { text-align: center; max-width: 500px; width: 100%; }
+h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #00dcc8, #a064ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+p { color: #8892c0; margin-bottom: 40px; font-size: 16px; }
+.btn {
+    display: block;
+    width: 100%;
+    padding: 25px;
+    font-size: 22px;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+.btn-doctor {
+    background: linear-gradient(135deg, #00dcc8, #0088ff);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 220, 200, 0.4);
+}
+.btn-student {
+    background: linear-gradient(135deg, #ff64b4, #a064ff);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(255, 100, 180, 0.4);
+}
+.btn:hover { transform: translateY(-5px); }
+.btn:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>📋 نظام تسجيل الحضور</h1>
+    <p>اختر نوع الدخول</p>
+    <a href="doctor.html" class="btn btn-doctor">👨‍🏫 دخول الدكتور</a>
+    <a href="student.html" class="btn btn-student">👨‍🎓 دخول الطالب</a>
+</div>
+</body>
+</html>
